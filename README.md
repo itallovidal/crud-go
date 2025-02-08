@@ -82,8 +82,8 @@ curl --request PUT \
   --header 'Content-Type: application/json' \
   --header 'User-Agent: insomnia/10.3.0' \
   --data '  {
-    "first_name": "Manu",
-    "last_name": "barrosa",
-    "biography": "Muito doce e encantadora"
+    "first_name": "Vitoria",
+    "last_name": "Vidal",
+    "biography": "Mediciner muito chata"
   }'
 ```

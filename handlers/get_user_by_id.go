@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
+	"rocketseat-desafio-1/helpers"
 	"rocketseat-desafio-1/models"
 
 	"github.com/go-chi/chi/v5"
@@ -24,18 +24,13 @@ func GetUserById(db map[string]models.User) http.HandlerFunc{
 		user, exists := db[id]
 
 		if !exists {
-			w.WriteHeader(http.StatusNotFound)
-
 			response := GetUserByIdResponse{
 				Status: 404,
 				Message: "Usuário não encontrado.",
 				User: nil,
 			}
 
-			jsonReponse, _ := json.Marshal(response)
-
-			w.WriteHeader(http.StatusNotFound)
-			w.Write(jsonReponse)
+			helpers.SendResponse(w, response, http.StatusNotFound)
 			return
 		}
 
@@ -44,9 +39,6 @@ func GetUserById(db map[string]models.User) http.HandlerFunc{
 			User: &user,
 		}
 
-		jsonReponse, _ := json.Marshal(response)
-
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonReponse)
+		helpers.SendResponse(w, response, http.StatusOK)
 	}
 }

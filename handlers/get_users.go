@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
+	"rocketseat-desafio-1/helpers"
 	"rocketseat-desafio-1/models"
 )
 
@@ -24,8 +24,6 @@ func GetAllUsers(db map[string]models.User) http.HandlerFunc{
 			Status: http.StatusOK,
 		}
 
-		jsonResponse, _ := json.Marshal(response)
-		
-		w.Write(jsonResponse)
+		helpers.SendResponse(w, response, http.StatusOK)
 	}
 }

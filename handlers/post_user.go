@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"io"
-	"log/slog"
 	"net/http"
 	"rocketseat-desafio-1/dtos"
+	"rocketseat-desafio-1/helpers"
 	"rocketseat-desafio-1/models"
 
 	"github.com/google/uuid"
@@ -17,8 +17,13 @@ func CreateUserController(db map[string]models.User) http.HandlerFunc{
 		body, bodyError := io.ReadAll(r.Body)
 
 		if bodyError != nil {
-			slog.Error("Body parse error.")
-			w.Write([]byte("Erro interno de servidor."))
+			response := dtos.GenericResponse{
+				Message: "Erro interno de servidor.",
+				Status: http.StatusInternalServerError,
+			}
+
+			helpers.SendResponse(w, response, http.StatusInternalServerError)
+			return
 		}
 
 		var userList []models.User
@@ -26,8 +31,13 @@ func CreateUserController(db map[string]models.User) http.HandlerFunc{
 		jsonError := json.Unmarshal(body, &userList)
 
 		if jsonError != nil {
-			slog.Error("Json parse error.")
-			w.Write([]byte("Erro interno de servidor."))
+			response := dtos.GenericResponse{
+				Message: "Erro interno de servidor.",
+				Status: http.StatusInternalServerError,
+			}
+			
+			helpers.SendResponse(w, response, http.StatusInternalServerError)
+			return
 		}
 
 		for _, newUser := range userList {
@@ -39,10 +49,7 @@ func CreateUserController(db map[string]models.User) http.HandlerFunc{
 			Message: "Usuários cadastrados com sucesso!",
 			Status: http.StatusCreated,
 		}
-
-		jsonResponse, _ := json.Marshal(response)
 		
-		w.WriteHeader(http.StatusCreated)
-		w.Write(jsonResponse)
+		helpers.SendResponse(w, response, http.StatusCreated)
 	}
 }

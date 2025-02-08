@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"io"
-	"log/slog"
 	"net/http"
 	"rocketseat-desafio-1/dtos"
+	"rocketseat-desafio-1/helpers"
 	"rocketseat-desafio-1/models"
 
 	"github.com/go-chi/chi/v5"
@@ -23,42 +23,34 @@ func UpdateUser(db map[string]models.User) http.HandlerFunc{
 				Message: "Não é possível atualizar um usuário inexistente.",
 				Status: http.StatusBadRequest,
 			}
-	
-			jsonResponse, _ := json.Marshal(response)
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(jsonResponse)
+
+			helpers.SendResponse(w, response, http.StatusBadRequest)
 			return
 		} 
 
 		body, bodyParserError := io.ReadAll(r.Body)
 
 		if bodyParserError != nil{
-			slog.Error("Body parser error.")
-
 			response := dtos.GenericResponse{
 				Message: "Erro interno do servidor.",
 				Status: http.StatusInternalServerError,
 			}
 
-			jsonResponse, _ := json.Marshal(response)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(jsonResponse)
+			helpers.SendResponse(w, response, http.StatusInternalServerError)
+			return
 		}
 
 		var updatedUser models.User
 		updateParserError := json.Unmarshal(body, &updatedUser)
 
 		if updateParserError != nil{
-			slog.Error("Update parser error.")
-
 			response := dtos.GenericResponse{
 				Message: "Erro interno do servidor.",
 				Status: http.StatusInternalServerError,
 			}
 
-			jsonResponse, _ := json.Marshal(response)
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write(jsonResponse)
+			helpers.SendResponse(w, response, http.StatusInternalServerError)
+			return
 		}
 
 		db[id] = updatedUser
@@ -68,8 +60,6 @@ func UpdateUser(db map[string]models.User) http.HandlerFunc{
 			Status: http.StatusNoContent,
 		}
 
-		jsonResponse, _ := json.Marshal(response)
-		w.WriteHeader(http.StatusNoContent)
-		w.Write(jsonResponse)
+		helpers.SendResponse(w, response, http.StatusNoContent)
 	}
 }

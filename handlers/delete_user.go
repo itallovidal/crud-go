@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"rocketseat-desafio-1/dtos"
+	"rocketseat-desafio-1/helpers"
 	"rocketseat-desafio-1/models"
 
 	"github.com/go-chi/chi/v5"
@@ -21,10 +21,8 @@ func DeleteUser(db map[string]models.User) http.HandlerFunc{
 				Message: "Não é possível deletar um usuário inexistente.",
 				Status: http.StatusBadRequest,
 			}
-	
-			jsonResponse, _ := json.Marshal(response)
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(jsonResponse)
+
+			helpers.SendResponse(w, response, http.StatusBadRequest)
 			return
 		} 
 
@@ -34,7 +32,6 @@ func DeleteUser(db map[string]models.User) http.HandlerFunc{
 			Status: http.StatusOK,
 		}
 
-		jsonResponse, _ := json.Marshal(response)
-		w.Write(jsonResponse)
+		helpers.SendResponse(w, response, http.StatusOK)
 	}
 }
