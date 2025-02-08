@@ -3,9 +3,9 @@ package main
 import (
 	"log/slog"
 	"net/http"
-	"rocketseat-desafio-1/controllers"
-	"rocketseat-desafio-1/interfaces"
+	"rocketseat-desafio-1/handlers"
 	"rocketseat-desafio-1/middlewares"
+	"rocketseat-desafio-1/models"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -21,15 +21,23 @@ func main(){
 	r.Use(middleware.Logger)
 	r.Use(middlewares.SetJsonResponseMiddleware)
 
-	db := map[string]interfaces.User{}
+	db := map[string]models.User{
+		"1703c5e5-d6e0-467f-840e-7b4b32ab3650":{
+			First_name: "Itallo",
+			Last_name: "Vidal",
+			Biography: "Estudante de SI.",
+		},
+	}
 
 	r.Route("/api", func(r chi.Router) {
+		// idRegex:= "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$}"
+
 		r.Route("/users", func(r chi.Router) {
-			r.Post("/", controllers.CreateUserController(db))
-			// r.Get("/")
-			// r.Get("/{id}")
-			// r.Delete("/{id}")
-			// r.Put("/{id}")
+			r.Post("/", handlers.CreateUserController(db))
+			r.Get("/", handlers.GetAllUsers(db))
+			r.Get("/{id}", handlers.GetUserById(db))
+			r.Delete("/{id}", handlers.DeleteUser(db))
+			r.Put("/{id}", handlers.UpdateUser(db))
 		})
 	})
 
